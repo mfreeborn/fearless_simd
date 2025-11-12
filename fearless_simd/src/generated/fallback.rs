@@ -6510,4 +6510,66 @@ impl Simd for Fallback {
         b1.copy_from_slice(&a.val[4usize..8usize]);
         (b0.simd_into(self), b1.simd_into(self))
     }
+    #[inline(always)]
+    fn exp_f32x4(self, a: f32x4<Self>) -> f32x4<Self> {
+        [a[0].exp(), a[1].exp(), a[2].exp(), a[3].exp()].simd_into(self)
+    }
+    #[inline(always)]
+    fn exp_f32x8(self, a: f32x8<Self>) -> f32x8<Self> {
+        [
+            a[0].exp(),
+            a[1].exp(),
+            a[2].exp(),
+            a[3].exp(),
+            a[4].exp(),
+            a[5].exp(),
+            a[6].exp(),
+            a[7].exp(),
+        ]
+        .simd_into(self)
+    }
+    #[inline(always)]
+    fn exp_f32x16(self, a: f32x16<Self>) -> f32x16<Self> {
+        [
+            a[0].exp(),
+            a[1].exp(),
+            a[2].exp(),
+            a[3].exp(),
+            a[4].exp(),
+            a[5].exp(),
+            a[6].exp(),
+            a[7].exp(),
+            a[8].exp(),
+            a[9].exp(),
+            a[10].exp(),
+            a[11].exp(),
+            a[12].exp(),
+            a[13].exp(),
+            a[14].exp(),
+            a[15].exp(),
+        ]
+        .simd_into(self)
+    }
+    #[inline(always)]
+    fn exp_f64x2(self, a: f64x2<Self>) -> f64x2<Self> {
+        [a[0].exp(), a[1].exp()].simd_into(self)
+    }
+    #[inline(always)]
+    fn exp_f64x4(self, a: f64x4<Self>) -> f64x4<Self> {
+        [a[0].exp(), a[1].exp(), a[2].exp(), a[3].exp()].simd_into(self)
+    }
+    #[inline(always)]
+    fn exp_f64x8(self, a: f64x8<Self>) -> f64x8<Self> {
+        [
+            a[0].exp(),
+            a[1].exp(),
+            a[2].exp(),
+            a[3].exp(),
+            a[4].exp(),
+            a[5].exp(),
+            a[6].exp(),
+            a[7].exp(),
+        ]
+        .simd_into(self)
+    }
 }

@@ -923,6 +923,12 @@ pub trait Simd: Sized + Clone + Copy + Send + Sync + Seal + 'static {
     ) -> mask64x8<Self>;
     fn simd_eq_mask64x8(self, a: mask64x8<Self>, b: mask64x8<Self>) -> mask64x8<Self>;
     fn split_mask64x8(self, a: mask64x8<Self>) -> (mask64x4<Self>, mask64x4<Self>);
+    fn exp_f32x4(self, a: f32x4<Self>) -> f32x4<Self>;
+    fn exp_f32x8(self, a: f32x8<Self>) -> f32x8<Self>;
+    fn exp_f32x16(self, a: f32x16<Self>) -> f32x16<Self>;
+    fn exp_f64x2(self, a: f64x2<Self>) -> f64x2<Self>;
+    fn exp_f64x4(self, a: f64x4<Self>) -> f64x4<Self>;
+    fn exp_f64x8(self, a: f64x8<Self>) -> f64x8<Self>;
 }
 pub trait SimdBase<Element: SimdElement, S: Simd>:
     Copy
@@ -1006,6 +1012,7 @@ pub trait SimdFloat<Element: SimdElement, S: Simd>:
     fn floor(self) -> Self;
     fn fract(self) -> Self;
     fn trunc(self) -> Self;
+    fn exp(self) -> Self;
 }
 pub trait SimdInt<Element: SimdElement, S: Simd>:
     SimdBase<Element, S>
