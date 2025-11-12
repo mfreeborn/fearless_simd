@@ -6572,4 +6572,179 @@ impl Simd for Fallback {
         ]
         .simd_into(self)
     }
+    #[inline(always)]
+    fn sin_cos_f32x4(self, a: f32x4<Self>) -> (f32x4<Self>, f32x4<Self>) {
+        let sin_cos = [
+            a[0].sin_cos(),
+            a[1].sin_cos(),
+            a[2].sin_cos(),
+            a[3].sin_cos(),
+        ];
+
+        (
+            [sin_cos[0].0, sin_cos[1].0, sin_cos[2].0, sin_cos[3].0].simd_into(self),
+            [sin_cos[0].1, sin_cos[1].1, sin_cos[2].1, sin_cos[3].1].simd_into(self),
+        )
+    }
+    #[inline(always)]
+    fn sin_cos_f32x8(self, a: f32x8<Self>) -> (f32x8<Self>, f32x8<Self>) {
+        let sin_cos = [
+            a[0].sin_cos(),
+            a[1].sin_cos(),
+            a[2].sin_cos(),
+            a[3].sin_cos(),
+            a[4].sin_cos(),
+            a[5].sin_cos(),
+            a[6].sin_cos(),
+            a[7].sin_cos(),
+        ];
+
+        (
+            [
+                sin_cos[0].0,
+                sin_cos[1].0,
+                sin_cos[2].0,
+                sin_cos[3].0,
+                sin_cos[4].0,
+                sin_cos[5].0,
+                sin_cos[6].0,
+                sin_cos[7].0,
+            ]
+            .simd_into(self),
+            [
+                sin_cos[0].1,
+                sin_cos[1].1,
+                sin_cos[2].1,
+                sin_cos[3].1,
+                sin_cos[4].1,
+                sin_cos[5].1,
+                sin_cos[6].1,
+                sin_cos[7].1,
+            ]
+            .simd_into(self),
+        )
+    }
+    #[inline(always)]
+    fn sin_cos_f32x16(self, a: f32x16<Self>) -> (f32x16<Self>, f32x16<Self>) {
+        let sin_cos = [
+            a[0].sin_cos(),
+            a[1].sin_cos(),
+            a[2].sin_cos(),
+            a[3].sin_cos(),
+            a[4].sin_cos(),
+            a[5].sin_cos(),
+            a[6].sin_cos(),
+            a[7].sin_cos(),
+            a[8].sin_cos(),
+            a[9].sin_cos(),
+            a[10].sin_cos(),
+            a[11].sin_cos(),
+            a[12].sin_cos(),
+            a[13].sin_cos(),
+            a[14].sin_cos(),
+            a[15].sin_cos(),
+        ];
+
+        (
+            [
+                sin_cos[0].0,
+                sin_cos[1].0,
+                sin_cos[2].0,
+                sin_cos[3].0,
+                sin_cos[4].0,
+                sin_cos[5].0,
+                sin_cos[6].0,
+                sin_cos[7].0,
+                sin_cos[8].0,
+                sin_cos[9].0,
+                sin_cos[10].0,
+                sin_cos[11].0,
+                sin_cos[12].0,
+                sin_cos[13].0,
+                sin_cos[14].0,
+                sin_cos[15].0,
+            ]
+            .simd_into(self),
+            [
+                sin_cos[0].1,
+                sin_cos[1].1,
+                sin_cos[2].1,
+                sin_cos[3].1,
+                sin_cos[4].1,
+                sin_cos[5].1,
+                sin_cos[6].1,
+                sin_cos[7].1,
+                sin_cos[8].1,
+                sin_cos[9].1,
+                sin_cos[10].1,
+                sin_cos[11].1,
+                sin_cos[12].1,
+                sin_cos[13].1,
+                sin_cos[14].1,
+                sin_cos[15].1,
+            ]
+            .simd_into(self),
+        )
+    }
+    #[inline(always)]
+    fn sin_cos_f64x2(self, a: f64x2<Self>) -> (f64x2<Self>, f64x2<Self>) {
+        let sin_cos = [a[0].sin_cos(), a[1].sin_cos()];
+
+        (
+            [sin_cos[0].0, sin_cos[1].0].simd_into(self),
+            [sin_cos[0].1, sin_cos[1].1].simd_into(self),
+        )
+    }
+    #[inline(always)]
+    fn sin_cos_f64x4(self, a: f64x4<Self>) -> (f64x4<Self>, f64x4<Self>) {
+        let sin_cos = [
+            a[0].sin_cos(),
+            a[1].sin_cos(),
+            a[2].sin_cos(),
+            a[3].sin_cos(),
+        ];
+
+        (
+            [sin_cos[0].0, sin_cos[1].0, sin_cos[2].0, sin_cos[3].0].simd_into(self),
+            [sin_cos[0].1, sin_cos[1].1, sin_cos[2].1, sin_cos[3].1].simd_into(self),
+        )
+    }
+    #[inline(always)]
+    fn sin_cos_f64x8(self, a: f64x8<Self>) -> (f64x8<Self>, f64x8<Self>) {
+        let sin_cos = [
+            a[0].sin_cos(),
+            a[1].sin_cos(),
+            a[2].sin_cos(),
+            a[3].sin_cos(),
+            a[4].sin_cos(),
+            a[5].sin_cos(),
+            a[6].sin_cos(),
+            a[7].sin_cos(),
+        ];
+
+        (
+            [
+                sin_cos[0].0,
+                sin_cos[1].0,
+                sin_cos[2].0,
+                sin_cos[3].0,
+                sin_cos[4].0,
+                sin_cos[5].0,
+                sin_cos[6].0,
+                sin_cos[7].0,
+            ]
+            .simd_into(self),
+            [
+                sin_cos[0].1,
+                sin_cos[1].1,
+                sin_cos[2].1,
+                sin_cos[3].1,
+                sin_cos[4].1,
+                sin_cos[5].1,
+                sin_cos[6].1,
+                sin_cos[7].1,
+            ]
+            .simd_into(self),
+        )
+    }
 }
