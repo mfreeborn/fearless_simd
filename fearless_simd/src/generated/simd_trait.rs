@@ -1019,6 +1019,7 @@ pub trait SimdFloat<Element: SimdElement, S: Simd>:
     fn fract(self) -> Self;
     fn trunc(self) -> Self;
     fn exp(self) -> Self;
+    fn sin_cos(self) -> (Self, Self);
 }
 pub trait SimdInt<Element: SimdElement, S: Simd>:
     SimdBase<Element, S>
