@@ -327,6 +327,14 @@ impl<S: Simd> crate::SimdFloat<f32, S> for f32x4<S> {
     fn sin_cos(self) -> (f32x4<S>, f32x4<S>) {
         self.simd.sin_cos_f32x4(self)
     }
+    #[inline(always)]
+    fn ln(self) -> f32x4<S> {
+        self.simd.ln_f32x4(self)
+    }
+    #[inline(always)]
+    fn atan2(self, op1: impl SimdInto<Self, S>) -> f32x4<S> {
+        self.simd.atan2_f32x4(self, op1.simd_into(self.simd))
+    }
 }
 impl<S: Simd> SimdCvtFloat<u32x4<S>> for f32x4<S> {
     fn float_from(x: u32x4<S>) -> Self {
@@ -2667,6 +2675,14 @@ impl<S: Simd> crate::SimdFloat<f64, S> for f64x2<S> {
     fn sin_cos(self) -> (f64x2<S>, f64x2<S>) {
         self.simd.sin_cos_f64x2(self)
     }
+    #[inline(always)]
+    fn ln(self) -> f64x2<S> {
+        self.simd.ln_f64x2(self)
+    }
+    #[inline(always)]
+    fn atan2(self, op1: impl SimdInto<Self, S>) -> f64x2<S> {
+        self.simd.atan2_f64x2(self, op1.simd_into(self.simd))
+    }
 }
 #[derive(Clone, Copy, Debug)]
 #[repr(C, align(16))]
@@ -3149,6 +3165,14 @@ impl<S: Simd> crate::SimdFloat<f32, S> for f32x8<S> {
     #[inline(always)]
     fn sin_cos(self) -> (f32x8<S>, f32x8<S>) {
         self.simd.sin_cos_f32x8(self)
+    }
+    #[inline(always)]
+    fn ln(self) -> f32x8<S> {
+        self.simd.ln_f32x8(self)
+    }
+    #[inline(always)]
+    fn atan2(self, op1: impl SimdInto<Self, S>) -> f32x8<S> {
+        self.simd.atan2_f32x8(self, op1.simd_into(self.simd))
     }
 }
 impl<S: Simd> SimdCvtFloat<u32x8<S>> for f32x8<S> {
@@ -5589,6 +5613,14 @@ impl<S: Simd> crate::SimdFloat<f64, S> for f64x4<S> {
     fn sin_cos(self) -> (f64x4<S>, f64x4<S>) {
         self.simd.sin_cos_f64x4(self)
     }
+    #[inline(always)]
+    fn ln(self) -> f64x4<S> {
+        self.simd.ln_f64x4(self)
+    }
+    #[inline(always)]
+    fn atan2(self, op1: impl SimdInto<Self, S>) -> f64x4<S> {
+        self.simd.atan2_f64x4(self, op1.simd_into(self.simd))
+    }
 }
 #[derive(Clone, Copy, Debug)]
 #[repr(C, align(32))]
@@ -6076,6 +6108,14 @@ impl<S: Simd> crate::SimdFloat<f32, S> for f32x16<S> {
     #[inline(always)]
     fn sin_cos(self) -> (f32x16<S>, f32x16<S>) {
         self.simd.sin_cos_f32x16(self)
+    }
+    #[inline(always)]
+    fn ln(self) -> f32x16<S> {
+        self.simd.ln_f32x16(self)
+    }
+    #[inline(always)]
+    fn atan2(self, op1: impl SimdInto<Self, S>) -> f32x16<S> {
+        self.simd.atan2_f32x16(self, op1.simd_into(self.simd))
     }
 }
 impl<S: Simd> SimdCvtFloat<u32x16<S>> for f32x16<S> {
@@ -8662,6 +8702,14 @@ impl<S: Simd> crate::SimdFloat<f64, S> for f64x8<S> {
     #[inline(always)]
     fn sin_cos(self) -> (f64x8<S>, f64x8<S>) {
         self.simd.sin_cos_f64x8(self)
+    }
+    #[inline(always)]
+    fn ln(self) -> f64x8<S> {
+        self.simd.ln_f64x8(self)
+    }
+    #[inline(always)]
+    fn atan2(self, op1: impl SimdInto<Self, S>) -> f64x8<S> {
+        self.simd.atan2_f64x8(self, op1.simd_into(self.simd))
     }
 }
 #[derive(Clone, Copy, Debug)]

@@ -6747,4 +6747,140 @@ impl Simd for Fallback {
             .simd_into(self),
         )
     }
+    #[inline(always)]
+    fn ln_f32x4(self, a: f32x4<Self>) -> f32x4<Self> {
+        [a[0].ln(), a[1].ln(), a[2].ln(), a[3].ln()].simd_into(self)
+    }
+    #[inline(always)]
+    fn ln_f32x8(self, a: f32x8<Self>) -> f32x8<Self> {
+        [
+            a[0].ln(),
+            a[1].ln(),
+            a[2].ln(),
+            a[3].ln(),
+            a[4].ln(),
+            a[5].ln(),
+            a[6].ln(),
+            a[7].ln(),
+        ]
+        .simd_into(self)
+    }
+    #[inline(always)]
+    fn ln_f32x16(self, a: f32x16<Self>) -> f32x16<Self> {
+        [
+            a[0].ln(),
+            a[1].ln(),
+            a[2].ln(),
+            a[3].ln(),
+            a[4].ln(),
+            a[5].ln(),
+            a[6].ln(),
+            a[7].ln(),
+            a[8].ln(),
+            a[9].ln(),
+            a[10].ln(),
+            a[11].ln(),
+            a[12].ln(),
+            a[13].ln(),
+            a[14].ln(),
+            a[15].ln(),
+        ]
+        .simd_into(self)
+    }
+    #[inline(always)]
+    fn ln_f64x2(self, a: f64x2<Self>) -> f64x2<Self> {
+        [a[0].ln(), a[1].ln()].simd_into(self)
+    }
+    #[inline(always)]
+    fn ln_f64x4(self, a: f64x4<Self>) -> f64x4<Self> {
+        [a[0].ln(), a[1].ln(), a[2].ln(), a[3].ln()].simd_into(self)
+    }
+    #[inline(always)]
+    fn ln_f64x8(self, a: f64x8<Self>) -> f64x8<Self> {
+        [
+            a[0].ln(),
+            a[1].ln(),
+            a[2].ln(),
+            a[3].ln(),
+            a[4].ln(),
+            a[5].ln(),
+            a[6].ln(),
+            a[7].ln(),
+        ]
+        .simd_into(self)
+    }
+    #[inline(always)]
+    fn atan2_f32x4(self, a: f32x4<Self>, b: f32x4<Self>) -> f32x4<Self> {
+        [
+            a[0].atan2(b[0]),
+            a[1].atan2(b[1]),
+            a[2].atan2(b[2]),
+            a[3].atan2(b[3]),
+        ]
+        .simd_into(self)
+    }
+    #[inline(always)]
+    fn atan2_f32x8(self, a: f32x8<Self>, b: f32x8<Self>) -> f32x8<Self> {
+        [
+            a[0].atan2(b[0]),
+            a[1].atan2(b[1]),
+            a[2].atan2(b[2]),
+            a[3].atan2(b[3]),
+            a[4].atan2(b[4]),
+            a[5].atan2(b[5]),
+            a[6].atan2(b[6]),
+            a[7].atan2(b[7]),
+        ]
+        .simd_into(self)
+    }
+    #[inline(always)]
+    fn atan2_f32x16(self, a: f32x16<Self>, b: f32x16<Self>) -> f32x16<Self> {
+        [
+            a[0].atan2(b[0]),
+            a[1].atan2(b[1]),
+            a[2].atan2(b[2]),
+            a[3].atan2(b[3]),
+            a[4].atan2(b[4]),
+            a[5].atan2(b[5]),
+            a[6].atan2(b[6]),
+            a[7].atan2(b[7]),
+            a[8].atan2(b[8]),
+            a[9].atan2(b[9]),
+            a[10].atan2(b[10]),
+            a[11].atan2(b[11]),
+            a[12].atan2(b[12]),
+            a[13].atan2(b[13]),
+            a[14].atan2(b[14]),
+            a[15].atan2(b[15]),
+        ]
+        .simd_into(self)
+    }
+    #[inline(always)]
+    fn atan2_f64x2(self, a: f64x2<Self>, b: f64x2<Self>) -> f64x2<Self> {
+        [a[0].atan2(b[0]), a[1].atan2(b[1])].simd_into(self)
+    }
+    #[inline(always)]
+    fn atan2_f64x4(self, a: f64x4<Self>, b: f64x4<Self>) -> f64x4<Self> {
+        [
+            a[0].atan2(b[0]),
+            a[1].atan2(b[1]),
+            a[2].atan2(b[2]),
+            a[3].atan2(b[3]),
+        ]
+        .simd_into(self)
+    }
+    #[inline(always)]
+    fn atan2_f64x8(self, a: f64x8<Self>, b: f64x8<Self>) -> f64x8<Self> {
+        [
+            a[0].atan2(b[0]),
+            a[1].atan2(b[1]),
+            a[2].atan2(b[2]),
+            a[3].atan2(b[3]),
+            a[4].atan2(b[4]),
+            a[5].atan2(b[5]),
+            a[6].atan2(b[6]),
+            a[7].atan2(b[7]),
+        ]
+        .simd_into(self)
+    }
 }

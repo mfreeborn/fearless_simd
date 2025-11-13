@@ -935,6 +935,18 @@ pub trait Simd: Sized + Clone + Copy + Send + Sync + Seal + 'static {
     fn sin_cos_f64x2(self, a: f64x2<Self>) -> (f64x2<Self>, f64x2<Self>);
     fn sin_cos_f64x4(self, a: f64x4<Self>) -> (f64x4<Self>, f64x4<Self>);
     fn sin_cos_f64x8(self, a: f64x8<Self>) -> (f64x8<Self>, f64x8<Self>);
+    fn ln_f32x4(self, a: f32x4<Self>) -> f32x4<Self>;
+    fn ln_f32x8(self, a: f32x8<Self>) -> f32x8<Self>;
+    fn ln_f32x16(self, a: f32x16<Self>) -> f32x16<Self>;
+    fn ln_f64x2(self, a: f64x2<Self>) -> f64x2<Self>;
+    fn ln_f64x4(self, a: f64x4<Self>) -> f64x4<Self>;
+    fn ln_f64x8(self, a: f64x8<Self>) -> f64x8<Self>;
+    fn atan2_f32x4(self, a: f32x4<Self>, b: f32x4<Self>) -> f32x4<Self>;
+    fn atan2_f32x8(self, a: f32x8<Self>, b: f32x8<Self>) -> f32x8<Self>;
+    fn atan2_f32x16(self, a: f32x16<Self>, b: f32x16<Self>) -> f32x16<Self>;
+    fn atan2_f64x2(self, a: f64x2<Self>, b: f64x2<Self>) -> f64x2<Self>;
+    fn atan2_f64x4(self, a: f64x4<Self>, b: f64x4<Self>) -> f64x4<Self>;
+    fn atan2_f64x8(self, a: f64x8<Self>, b: f64x8<Self>) -> f64x8<Self>;
 }
 pub trait SimdBase<Element: SimdElement, S: Simd>:
     Copy
@@ -1020,6 +1032,8 @@ pub trait SimdFloat<Element: SimdElement, S: Simd>:
     fn trunc(self) -> Self;
     fn exp(self) -> Self;
     fn sin_cos(self) -> (Self, Self);
+    fn ln(self) -> Self;
+    fn atan2(self, op1: impl SimdInto<Self, S>) -> Self;
 }
 pub trait SimdInt<Element: SimdElement, S: Simd>:
     SimdBase<Element, S>
