@@ -8,7 +8,10 @@
     clippy::todo,
     reason = "TODO: https://github.com/linebender/fearless_simd/issues/40"
 )]
-use erydanos::{_mm_atan2_ps, _mm_ln_ps, _mm256_atan2_ps, _mm256_ln_ps};
+use erydanos::{
+    _mm_atan2_pd, _mm_atan2_ps, _mm_ln_pd, _mm_ln_ps, _mm256_atan2_pd, _mm256_atan2_ps,
+    _mm256_exp_pd, _mm256_exp_ps, _mm256_ln_pd, _mm256_ln_ps,
+};
 
 use crate::{Level, Simd, SimdFrom, SimdInto, seal::Seal};
 use crate::{
@@ -4693,17 +4696,7 @@ impl Simd for Avx2 {
     }
     #[inline(always)]
     fn exp_f32x8(self, a: f32x8<Self>) -> f32x8<Self> {
-        [
-            a[0].exp(),
-            a[1].exp(),
-            a[2].exp(),
-            a[3].exp(),
-            a[4].exp(),
-            a[5].exp(),
-            a[6].exp(),
-            a[7].exp(),
-        ]
-        .simd_into(self)
+        unsafe { _mm256_exp_ps(a.into()) }.simd_into(self)
     }
     #[inline(always)]
     fn exp_f32x16(self, a: f32x16<Self>) -> f32x16<Self> {
@@ -4733,7 +4726,7 @@ impl Simd for Avx2 {
     }
     #[inline(always)]
     fn exp_f64x4(self, a: f64x4<Self>) -> f64x4<Self> {
-        [a[0].exp(), a[1].exp(), a[2].exp(), a[3].exp()].simd_into(self)
+        unsafe { _mm256_exp_pd(a.into()) }.simd_into(self)
     }
     #[inline(always)]
     fn exp_f64x8(self, a: f64x8<Self>) -> f64x8<Self> {
@@ -4956,11 +4949,11 @@ impl Simd for Avx2 {
     }
     #[inline(always)]
     fn ln_f64x2(self, a: f64x2<Self>) -> f64x2<Self> {
-        [a[0].ln(), a[1].ln()].simd_into(self)
+        unsafe { _mm_ln_pd(a.into()) }.simd_into(self)
     }
     #[inline(always)]
     fn ln_f64x4(self, a: f64x4<Self>) -> f64x4<Self> {
-        [a[0].ln(), a[1].ln(), a[2].ln(), a[3].ln()].simd_into(self)
+        unsafe { _mm256_ln_pd(a.into()) }.simd_into(self)
     }
     #[inline(always)]
     fn ln_f64x8(self, a: f64x8<Self>) -> f64x8<Self> {
@@ -5008,17 +5001,11 @@ impl Simd for Avx2 {
     }
     #[inline(always)]
     fn atan2_f64x2(self, a: f64x2<Self>, b: f64x2<Self>) -> f64x2<Self> {
-        [a[0].atan2(b[0]), a[1].atan2(b[1])].simd_into(self)
+        unsafe { _mm_atan2_pd(a.into(), b.into()) }.simd_into(self)
     }
     #[inline(always)]
     fn atan2_f64x4(self, a: f64x4<Self>, b: f64x4<Self>) -> f64x4<Self> {
-        [
-            a[0].atan2(b[0]),
-            a[1].atan2(b[1]),
-            a[2].atan2(b[2]),
-            a[3].atan2(b[3]),
-        ]
-        .simd_into(self)
+        unsafe { _mm256_atan2_pd(a.into(), b.into()) }.simd_into(self)
     }
     #[inline(always)]
     fn atan2_f64x8(self, a: f64x8<Self>, b: f64x8<Self>) -> f64x8<Self> {
@@ -5033,6 +5020,13 @@ impl Simd for Avx2 {
             a[7].atan2(b[7]),
         ]
         .simd_into(self)
+    }
+    #[inline(always)]
+    fn combine_cvtpd_ps(self, a: f64x4<Self>, b: f64x4<Self>) -> f32x8<Self> {
+        self.combine_f32x4(
+            unsafe { _mm256_cvtpd_ps(a.into()) }.simd_into(self),
+            unsafe { _mm256_cvtpd_ps(b.into()) }.simd_into(self),
+        )
     }
 }
 impl<S: Simd> SimdFrom<__m256, S> for f32x8<S> {

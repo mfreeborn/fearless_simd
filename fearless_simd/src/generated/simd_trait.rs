@@ -947,6 +947,7 @@ pub trait Simd: Sized + Clone + Copy + Send + Sync + Seal + 'static {
     fn atan2_f64x2(self, a: f64x2<Self>, b: f64x2<Self>) -> f64x2<Self>;
     fn atan2_f64x4(self, a: f64x4<Self>, b: f64x4<Self>) -> f64x4<Self>;
     fn atan2_f64x8(self, a: f64x8<Self>, b: f64x8<Self>) -> f64x8<Self>;
+    fn combine_cvtpd_ps(self, a: Self::f64s, b: Self::f64s) -> Self::f32s;
 }
 pub trait SimdBase<Element: SimdElement, S: Simd>:
     Copy
@@ -1035,6 +1036,7 @@ pub trait SimdFloat<Element: SimdElement, S: Simd>:
     fn ln(self) -> Self;
     fn atan2(self, op1: impl SimdInto<Self, S>) -> Self;
 }
+
 pub trait SimdInt<Element: SimdElement, S: Simd>:
     SimdBase<Element, S>
     + core::ops::Add<Output = Self>

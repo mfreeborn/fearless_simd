@@ -6884,4 +6884,8 @@ impl Simd for Fallback {
         ]
         .simd_into(self)
     }
+    #[inline(always)]
+    fn combine_cvtpd_ps(self, a: f64x2<Self>, b: f64x2<Self>) -> f32x4<Self> {
+        [a[0] as f32, a[1] as f32, b[0] as f32, b[1] as f32].simd_into(self)
+    }
 }

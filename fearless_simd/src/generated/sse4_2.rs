@@ -8,7 +8,9 @@
     clippy::todo,
     reason = "TODO: https://github.com/linebender/fearless_simd/issues/40"
 )]
-use erydanos::{_mm_atan_ps, _mm_eqzero_ps, _mm_ltzero_ps, _mm_select_ps};
+use erydanos::{
+    _mm_atan_ps, _mm_atan2_pd, _mm_atan2_ps, _mm_eqzero_ps, _mm_ln_ps, _mm_ltzero_ps, _mm_select_ps,
+};
 
 use crate::{Level, Simd, SimdFrom, SimdInto, seal::Seal};
 use crate::{
@@ -5070,7 +5072,7 @@ impl Simd for Sse4_2 {
     }
     #[inline(always)]
     fn ln_f32x4(self, a: f32x4<Self>) -> f32x4<Self> {
-        [a[0].ln(), a[1].ln(), a[2].ln(), a[3].ln()].simd_into(self)
+        unsafe { _mm_ln_ps(a.into()) }.simd_into(self)
     }
     #[inline(always)]
     fn ln_f32x8(self, a: f32x8<Self>) -> f32x8<Self> {
@@ -5132,41 +5134,7 @@ impl Simd for Sse4_2 {
     }
     #[inline(always)]
     fn atan2_f32x4(self, a: f32x4<Self>, b: f32x4<Self>) -> f32x4<Self> {
-        let y = a.into();
-        let x = b.into();
-
-        unsafe {
-            let zero_x_mask = _mm_eqzero_ps(x);
-            let yx = _mm_atan_ps(_mm_div_ps(y, x));
-            let mut rad = yx;
-            rad = _mm_select_ps(
-                _mm_and_ps(zero_x_mask, _mm_cmpge_ps(y, _mm_setzero_ps())),
-                _mm_set1_ps(std::f32::consts::FRAC_PI_2),
-                rad,
-            ); // x == 0 && y > 0.
-            rad = _mm_select_ps(
-                _mm_and_ps(zero_x_mask, _mm_cmple_ps(y, _mm_setzero_ps())),
-                _mm_set1_ps(-std::f32::consts::FRAC_PI_2),
-                rad,
-            ); // x == 0 && y < 0.
-            rad = _mm_select_ps(
-                _mm_and_ps(zero_x_mask, _mm_cmple_ps(y, _mm_setzero_ps())),
-                _mm_set1_ps(0f32),
-                rad,
-            ); // x == 0 && y == 0.
-            let x_lower_than_0 = _mm_ltzero_ps(x);
-            rad = _mm_select_ps(
-                _mm_and_ps(x_lower_than_0, _mm_cmpge_ps(y, _mm_setzero_ps())),
-                _mm_add_ps(yx, _mm_set1_ps(std::f32::consts::PI)),
-                rad,
-            ); // x < 0 && y >= 0
-            rad = _mm_select_ps(
-                _mm_and_ps(x_lower_than_0, _mm_ltzero_ps(y)),
-                _mm_add_ps(yx, _mm_set1_ps(-std::f32::consts::PI)),
-                rad,
-            ); // x < 0 && y < 0
-            rad.simd_into(self)
-        }
+        unsafe { _mm_atan2_ps(a.into(), b.into()) }.simd_into(self)
     }
     #[inline(always)]
     fn atan2_f32x8(self, a: f32x8<Self>, b: f32x8<Self>) -> f32x8<Self> {
@@ -5182,31 +5150,26 @@ impl Simd for Sse4_2 {
     }
     #[inline(always)]
     fn atan2_f64x2(self, a: f64x2<Self>, b: f64x2<Self>) -> f64x2<Self> {
-        [a[0].atan2(b[0]), a[1].atan2(b[1])].simd_into(self)
+        unsafe { _mm_atan2_pd(a.into(), b.into()) }.simd_into(self)
     }
     #[inline(always)]
     fn atan2_f64x4(self, a: f64x4<Self>, b: f64x4<Self>) -> f64x4<Self> {
-        [
-            a[0].atan2(b[0]),
-            a[1].atan2(b[1]),
-            a[2].atan2(b[2]),
-            a[3].atan2(b[3]),
-        ]
-        .simd_into(self)
+        let (a0, a1) = self.split_f64x4(a);
+        let (b0, b1) = self.split_f64x4(b);
+        self.combine_f64x2(self.atan2_f64x2(a0, b0), self.atan2_f64x2(a1, b1))
     }
     #[inline(always)]
     fn atan2_f64x8(self, a: f64x8<Self>, b: f64x8<Self>) -> f64x8<Self> {
-        [
-            a[0].atan2(b[0]),
-            a[1].atan2(b[1]),
-            a[2].atan2(b[2]),
-            a[3].atan2(b[3]),
-            a[4].atan2(b[4]),
-            a[5].atan2(b[5]),
-            a[6].atan2(b[6]),
-            a[7].atan2(b[7]),
-        ]
-        .simd_into(self)
+        let (a0, a1) = self.split_f64x8(a);
+        let (b0, b1) = self.split_f64x8(b);
+        self.combine_f64x4(self.atan2_f64x4(a0, b0), self.atan2_f64x4(a1, b1))
+    }
+
+    #[inline(always)]
+    fn combine_cvtpd_ps(self, a: f64x2<Self>, b: f64x2<Self>) -> f32x4<Self> {
+        let a = unsafe { _mm_cvtpd_ps(a.into()) };
+        let b = unsafe { _mm_cvtpd_ps(b.into()) };
+        unsafe { _mm_movelh_ps(a, b) }.simd_into(self)
     }
 }
 impl<S: Simd> SimdFrom<__m128, S> for f32x4<S> {
