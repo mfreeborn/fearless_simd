@@ -45,7 +45,6 @@ impl Avx2 {
 }
 impl Seal for Avx2 {}
 impl Simd for Avx2 {
-    type f64s = f64x4<Self>;
     type f32s = f32x8<Self>;
     type f64s = f64x4<Self>;
     type u8s = u8x32<Self>;

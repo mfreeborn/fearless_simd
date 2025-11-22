@@ -71,7 +71,6 @@ impl Fallback {
 }
 impl Seal for Fallback {}
 impl Simd for Fallback {
-    type f64s = f64x2<Self>;
     type f32s = f32x4<Self>;
     type f64s = f64x2<Self>;
     type u8s = u8x16<Self>;
