@@ -146,6 +146,7 @@ pub mod wasm32 {
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 pub mod x86 {
     pub use crate::generated::Avx2;
+    pub use crate::generated::Avx512;
     pub use crate::generated::Sse4_2;
 }
 
@@ -197,6 +198,7 @@ pub enum Level {
     Avx2(Avx2),
     // If new variants are added, make sure to handle them in `Level::dispatch`
     // and `dispatch!()`
+    Avx512(Avx512),
 }
 
 impl Level {
