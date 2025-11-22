@@ -8,9 +8,7 @@
     clippy::todo,
     reason = "TODO: https://github.com/linebender/fearless_simd/issues/40"
 )]
-use erydanos::{
-    _mm_atan_ps, _mm_atan2_pd, _mm_atan2_ps, _mm_eqzero_ps, _mm_ln_ps, _mm_ltzero_ps, _mm_select_ps,
-};
+use erydanos::{_mm_atan2_pd, _mm_atan2_ps, _mm_ln_ps};
 
 use crate::{Level, Simd, SimdFrom, SimdInto, seal::Seal};
 use crate::{
