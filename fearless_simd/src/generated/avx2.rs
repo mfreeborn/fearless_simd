@@ -9,8 +9,10 @@
     reason = "TODO: https://github.com/linebender/fearless_simd/issues/40"
 )]
 use erydanos::{
-    _mm_atan2_pd, _mm_atan2_ps, _mm_ln_pd, _mm_ln_ps, _mm256_atan2_pd, _mm256_atan2_ps,
-    _mm256_exp_pd, _mm256_exp_ps, _mm256_ln_pd, _mm256_ln_ps,
+    _mm_atan2_pd, _mm_atan2_ps, _mm_cos_pd, _mm_cos_ps, _mm_exp_pd, _mm_exp_ps, _mm_ln_pd,
+    _mm_ln_ps, _mm_sin_pd, _mm_sin_ps, _mm256_atan2_pd, _mm256_atan2_ps, _mm256_cos_pd,
+    _mm256_cos_ps, _mm256_exp_pd, _mm256_exp_ps, _mm256_ln_pd, _mm256_ln_ps, _mm256_sin_pd,
+    _mm256_sin_ps,
 };
 
 use crate::{Level, Simd, SimdFrom, SimdInto, seal::Seal};
@@ -4691,7 +4693,7 @@ impl Simd for Avx2 {
     }
     #[inline(always)]
     fn exp_f32x4(self, a: f32x4<Self>) -> f32x4<Self> {
-        [a[0].exp(), a[1].exp(), a[2].exp(), a[3].exp()].simd_into(self)
+        unsafe { _mm_exp_ps(a.into()) }.simd_into(self)
     }
     #[inline(always)]
     fn exp_f32x8(self, a: f32x8<Self>) -> f32x8<Self> {
@@ -4699,29 +4701,12 @@ impl Simd for Avx2 {
     }
     #[inline(always)]
     fn exp_f32x16(self, a: f32x16<Self>) -> f32x16<Self> {
-        [
-            a[0].exp(),
-            a[1].exp(),
-            a[2].exp(),
-            a[3].exp(),
-            a[4].exp(),
-            a[5].exp(),
-            a[6].exp(),
-            a[7].exp(),
-            a[8].exp(),
-            a[9].exp(),
-            a[10].exp(),
-            a[11].exp(),
-            a[12].exp(),
-            a[13].exp(),
-            a[14].exp(),
-            a[15].exp(),
-        ]
-        .simd_into(self)
+        let (a, b) = self.split_f32x16(a);
+        self.combine_f32x8(self.exp_f32x8(a), self.exp_f32x8(b))
     }
     #[inline(always)]
     fn exp_f64x2(self, a: f64x2<Self>) -> f64x2<Self> {
-        [a[0].exp(), a[1].exp()].simd_into(self)
+        unsafe { _mm_exp_pd(a.into()) }.simd_into(self)
     }
     #[inline(always)]
     fn exp_f64x4(self, a: f64x4<Self>) -> f64x4<Self> {
@@ -4729,191 +4714,51 @@ impl Simd for Avx2 {
     }
     #[inline(always)]
     fn exp_f64x8(self, a: f64x8<Self>) -> f64x8<Self> {
-        [
-            a[0].exp(),
-            a[1].exp(),
-            a[2].exp(),
-            a[3].exp(),
-            a[4].exp(),
-            a[5].exp(),
-            a[6].exp(),
-            a[7].exp(),
-        ]
-        .simd_into(self)
+        let (a, b) = self.split_f64x8(a);
+        self.combine_f64x4(self.exp_f64x4(a), self.exp_f64x4(b))
     }
     #[inline(always)]
     fn sin_cos_f32x4(self, a: f32x4<Self>) -> (f32x4<Self>, f32x4<Self>) {
-        let sin_cos = [
-            a[0].sin_cos(),
-            a[1].sin_cos(),
-            a[2].sin_cos(),
-            a[3].sin_cos(),
-        ];
-
-        (
-            [sin_cos[0].0, sin_cos[1].0, sin_cos[2].0, sin_cos[3].0].simd_into(self),
-            [sin_cos[0].1, sin_cos[1].1, sin_cos[2].1, sin_cos[3].1].simd_into(self),
-        )
+        let sin = unsafe { _mm_sin_ps(a.into()) }.simd_into(self);
+        let cos = unsafe { _mm_cos_ps(a.into()) }.simd_into(self);
+        (sin, cos)
     }
     #[inline(always)]
     fn sin_cos_f32x8(self, a: f32x8<Self>) -> (f32x8<Self>, f32x8<Self>) {
-        let sin_cos = [
-            a[0].sin_cos(),
-            a[1].sin_cos(),
-            a[2].sin_cos(),
-            a[3].sin_cos(),
-            a[4].sin_cos(),
-            a[5].sin_cos(),
-            a[6].sin_cos(),
-            a[7].sin_cos(),
-        ];
-
-        (
-            [
-                sin_cos[0].0,
-                sin_cos[1].0,
-                sin_cos[2].0,
-                sin_cos[3].0,
-                sin_cos[4].0,
-                sin_cos[5].0,
-                sin_cos[6].0,
-                sin_cos[7].0,
-            ]
-            .simd_into(self),
-            [
-                sin_cos[0].1,
-                sin_cos[1].1,
-                sin_cos[2].1,
-                sin_cos[3].1,
-                sin_cos[4].1,
-                sin_cos[5].1,
-                sin_cos[6].1,
-                sin_cos[7].1,
-            ]
-            .simd_into(self),
-        )
+        let sin = unsafe { _mm256_sin_ps(a.into()) }.simd_into(self);
+        let cos = unsafe { _mm256_cos_ps(a.into()) }.simd_into(self);
+        (sin, cos)
     }
     #[inline(always)]
     fn sin_cos_f32x16(self, a: f32x16<Self>) -> (f32x16<Self>, f32x16<Self>) {
-        let sin_cos = [
-            a[0].sin_cos(),
-            a[1].sin_cos(),
-            a[2].sin_cos(),
-            a[3].sin_cos(),
-            a[4].sin_cos(),
-            a[5].sin_cos(),
-            a[6].sin_cos(),
-            a[7].sin_cos(),
-            a[8].sin_cos(),
-            a[9].sin_cos(),
-            a[10].sin_cos(),
-            a[11].sin_cos(),
-            a[12].sin_cos(),
-            a[13].sin_cos(),
-            a[14].sin_cos(),
-            a[15].sin_cos(),
-        ];
-
+        let (a, b) = self.split_f32x16(a);
+        let (sin_a, cos_a) = self.sin_cos_f32x8(a);
+        let (sin_b, cos_b) = self.sin_cos_f32x8(b);
         (
-            [
-                sin_cos[0].0,
-                sin_cos[1].0,
-                sin_cos[2].0,
-                sin_cos[3].0,
-                sin_cos[4].0,
-                sin_cos[5].0,
-                sin_cos[6].0,
-                sin_cos[7].0,
-                sin_cos[8].0,
-                sin_cos[9].0,
-                sin_cos[10].0,
-                sin_cos[11].0,
-                sin_cos[12].0,
-                sin_cos[13].0,
-                sin_cos[14].0,
-                sin_cos[15].0,
-            ]
-            .simd_into(self),
-            [
-                sin_cos[0].1,
-                sin_cos[1].1,
-                sin_cos[2].1,
-                sin_cos[3].1,
-                sin_cos[4].1,
-                sin_cos[5].1,
-                sin_cos[6].1,
-                sin_cos[7].1,
-                sin_cos[8].1,
-                sin_cos[9].1,
-                sin_cos[10].1,
-                sin_cos[11].1,
-                sin_cos[12].1,
-                sin_cos[13].1,
-                sin_cos[14].1,
-                sin_cos[15].1,
-            ]
-            .simd_into(self),
+            self.combine_f32x8(sin_a, sin_b),
+            self.combine_f32x8(cos_a, cos_b),
         )
     }
     #[inline(always)]
     fn sin_cos_f64x2(self, a: f64x2<Self>) -> (f64x2<Self>, f64x2<Self>) {
-        let sin_cos = [a[0].sin_cos(), a[1].sin_cos()];
-
-        (
-            [sin_cos[0].0, sin_cos[1].0].simd_into(self),
-            [sin_cos[0].1, sin_cos[1].1].simd_into(self),
-        )
+        let sin = unsafe { _mm_sin_pd(a.into()) }.simd_into(self);
+        let cos = unsafe { _mm_cos_pd(a.into()) }.simd_into(self);
+        (sin, cos)
     }
     #[inline(always)]
     fn sin_cos_f64x4(self, a: f64x4<Self>) -> (f64x4<Self>, f64x4<Self>) {
-        let sin_cos = [
-            a[0].sin_cos(),
-            a[1].sin_cos(),
-            a[2].sin_cos(),
-            a[3].sin_cos(),
-        ];
-
-        (
-            [sin_cos[0].0, sin_cos[1].0, sin_cos[2].0, sin_cos[3].0].simd_into(self),
-            [sin_cos[0].1, sin_cos[1].1, sin_cos[2].1, sin_cos[3].1].simd_into(self),
-        )
+        let sin = unsafe { _mm256_sin_pd(a.into()) }.simd_into(self);
+        let cos = unsafe { _mm256_cos_pd(a.into()) }.simd_into(self);
+        (sin, cos)
     }
     #[inline(always)]
     fn sin_cos_f64x8(self, a: f64x8<Self>) -> (f64x8<Self>, f64x8<Self>) {
-        let sin_cos = [
-            a[0].sin_cos(),
-            a[1].sin_cos(),
-            a[2].sin_cos(),
-            a[3].sin_cos(),
-            a[4].sin_cos(),
-            a[5].sin_cos(),
-            a[6].sin_cos(),
-            a[7].sin_cos(),
-        ];
-
+        let (a, b) = self.split_f64x8(a);
+        let (sin_a, cos_a) = self.sin_cos_f64x4(a);
+        let (sin_b, cos_b) = self.sin_cos_f64x4(b);
         (
-            [
-                sin_cos[0].0,
-                sin_cos[1].0,
-                sin_cos[2].0,
-                sin_cos[3].0,
-                sin_cos[4].0,
-                sin_cos[5].0,
-                sin_cos[6].0,
-                sin_cos[7].0,
-            ]
-            .simd_into(self),
-            [
-                sin_cos[0].1,
-                sin_cos[1].1,
-                sin_cos[2].1,
-                sin_cos[3].1,
-                sin_cos[4].1,
-                sin_cos[5].1,
-                sin_cos[6].1,
-                sin_cos[7].1,
-            ]
-            .simd_into(self),
+            self.combine_f64x4(sin_a, sin_b),
+            self.combine_f64x4(cos_a, cos_b),
         )
     }
     #[inline(always)]
@@ -4926,25 +4771,8 @@ impl Simd for Avx2 {
     }
     #[inline(always)]
     fn ln_f32x16(self, a: f32x16<Self>) -> f32x16<Self> {
-        [
-            a[0].ln(),
-            a[1].ln(),
-            a[2].ln(),
-            a[3].ln(),
-            a[4].ln(),
-            a[5].ln(),
-            a[6].ln(),
-            a[7].ln(),
-            a[8].ln(),
-            a[9].ln(),
-            a[10].ln(),
-            a[11].ln(),
-            a[12].ln(),
-            a[13].ln(),
-            a[14].ln(),
-            a[15].ln(),
-        ]
-        .simd_into(self)
+        let (a, b) = self.split_f32x16(a);
+        self.combine_f32x8(self.ln_f32x8(a), self.ln_f32x8(b))
     }
     #[inline(always)]
     fn ln_f64x2(self, a: f64x2<Self>) -> f64x2<Self> {
@@ -4956,17 +4784,8 @@ impl Simd for Avx2 {
     }
     #[inline(always)]
     fn ln_f64x8(self, a: f64x8<Self>) -> f64x8<Self> {
-        [
-            a[0].ln(),
-            a[1].ln(),
-            a[2].ln(),
-            a[3].ln(),
-            a[4].ln(),
-            a[5].ln(),
-            a[6].ln(),
-            a[7].ln(),
-        ]
-        .simd_into(self)
+        let (a, b) = self.split_f64x8(a);
+        self.combine_f64x4(self.ln_f64x4(a), self.ln_f64x4(b))
     }
     #[inline(always)]
     fn atan2_f32x4(self, y: f32x4<Self>, x: f32x4<Self>) -> f32x4<Self> {
